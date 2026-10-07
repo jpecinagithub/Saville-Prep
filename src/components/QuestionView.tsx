@@ -23,17 +23,17 @@ export function QuestionView({ q, selectedId, onSelect, disabled, reveal }: Prop
 
   const optionClass = (id: string) => {
     const base =
-      "flex w-full items-start gap-3 rounded-xl border-2 px-4 py-3 text-left transition focus-visible:outline-none";
+      "flex w-full items-start gap-3 rounded-2xl border-2 px-4 py-3.5 text-left transition duration-150 focus-visible:outline-none";
     if (reveal) {
       if (id === q.correctAnswer)
-        return `${base} border-emerald-600 bg-emerald-50`;
+        return `${base} border-emerald-600 bg-emerald-50 shadow-card`;
       if (id === selectedId)
         return `${base} border-red-500 bg-red-50`;
       return `${base} border-slate-200 bg-white opacity-70`;
     }
     if (id === selectedId)
-      return `${base} border-brand bg-brand-light cursor-pointer`;
-    return `${base} border-slate-200 bg-white hover:border-brand hover:bg-slate-50 cursor-pointer`;
+      return `${base} cursor-pointer border-brand bg-brand-light shadow-card`;
+    return `${base} cursor-pointer border-slate-200 bg-white hover:-translate-y-px hover:border-brand/60 hover:shadow-card`;
   };
 
   return (

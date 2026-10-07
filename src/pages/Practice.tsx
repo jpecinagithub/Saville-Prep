@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { CheckCircle2, XCircle, MinusCircle, Gauge } from "lucide-react";
+import { CheckCircle2, XCircle, MinusCircle, Gauge, BookOpenText, Calculator, Shapes, Shuffle, Timer, TimerOff } from "lucide-react";
 import type { Difficulty, Question, QuestionCategory } from "../types";
 import { useT } from "../i18n/useT";
 import { useCountdown, formatClock } from "../hooks/useCountdown";
@@ -38,67 +38,117 @@ export function Practice() {
     return <PracticeRun key={run.key} questions={run.questions} timed={run.timed} onExit={() => setRun(null)} onRestart={start} />;
   }
 
-  const cats: { id: Cat; label: string }[] = [
-    { id: "verbal", label: t("common.verbal") },
-    { id: "numerical", label: t("common.numerical") },
-    { id: "diagrammatic", label: t("common.diagrammatic") },
-    { id: "mixed", label: t("common.mixed") },
+  const cats: { id: Cat; label: string; icon: typeof BookOpenText; chip: string; active: string }[] = [
+    { id: "verbal", label: t("common.verbal"), icon: BookOpenText, chip: "bg-verbal-soft text-verbal-ink", active: "border-verbal bg-verbal-soft/60 ring-2 ring-verbal/30" },
+    { id: "numerical", label: t("common.numerical"), icon: Calculator, chip: "bg-numerical-soft text-numerical-ink", active: "border-numerical bg-numerical-soft/60 ring-2 ring-numerical/30" },
+    { id: "diagrammatic", label: t("common.diagrammatic"), icon: Shapes, chip: "bg-diagram-soft text-diagram-ink", active: "border-diagram bg-diagram-soft/60 ring-2 ring-diagram/30" },
+    { id: "mixed", label: t("common.mixed"), icon: Shuffle, chip: "bg-slate-100 text-slate-600", active: "border-brand bg-brand-light/60 ring-2 ring-brand/25" },
   ];
-  const diffs: { id: Diff; label: string }[] = [
-    { id: "easy", label: t("common.easy") },
-    { id: "medium", label: t("common.medium") },
-    { id: "hard", label: t("common.hard") },
-    { id: "mixed", label: t("common.mixed") },
+  const diffs: { id: Diff; label: string; bars: number }[] = [
+    { id: "easy", label: t("common.easy"), bars: 1 },
+    { id: "medium", label: t("common.medium"), bars: 2 },
+    { id: "hard", label: t("common.hard"), bars: 3 },
+    { id: "mixed", label: t("common.mixed"), bars: 0 },
   ];
-  const chip = (active: boolean) =>
-    `rounded-xl border-2 px-5 py-3 font-semibold transition ${
-      active ? "border-brand bg-brand-light text-brand" : "border-slate-200 bg-white text-slate-700 hover:border-brand"
-    }`;
+  const cardBase =
+    "card card-hover flex items-center gap-4 p-4 text-left sm:p-5";
 
   return (
     <div className="mx-auto max-w-3xl">
-      <h1 className="text-3xl font-extrabold text-ink md:text-4xl">{t("practice.title")}</h1>
+      <h1 className="section-head">{t("practice.title")}</h1>
       <p className="mt-2 text-lg text-slate-600">{t("practice.subtitle")}</p>
 
-      <div className="mt-8 space-y-8">
+      <div className="mt-8 space-y-9">
         <section>
-          <h2 className="mb-3 text-lg font-bold text-ink">{t("practice.step1")}</h2>
-          <div className="flex flex-wrap gap-3" role="radiogroup" aria-label={t("practice.step1")}>
+          <h2 className="mb-4 text-lg font-bold text-ink">{t("practice.step1")}</h2>
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4" role="radiogroup" aria-label={t("practice.step1")}>
             {cats.map((c) => (
-              <button key={c.id} type="button" role="radio" aria-checked={cat === c.id} onClick={() => setCat(c.id)} className={chip(cat === c.id)}>
-                {c.label}
+              <button
+                key={c.id}
+                type="button"
+                role="radio"
+                aria-checked={cat === c.id}
+                onClick={() => setCat(c.id)}
+                className={`${cardBase} flex-col items-start gap-3 ${cat === c.id ? c.active : ""}`}
+              >
+                <span className={`inline-flex h-11 w-11 items-center justify-center rounded-2xl ${c.chip}`}>
+                  <c.icon size={22} aria-hidden />
+                </span>
+                <span className="font-bold text-ink">{c.label}</span>
               </button>
             ))}
           </div>
         </section>
         <section>
-          <h2 className="mb-3 text-lg font-bold text-ink">{t("practice.step2")}</h2>
-          <div className="flex flex-wrap gap-3" role="radiogroup" aria-label={t("practice.step2")}>
+          <h2 className="mb-4 text-lg font-bold text-ink">{t("practice.step2")}</h2>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4" role="radiogroup" aria-label={t("practice.step2")}>
             {diffs.map((d) => (
-              <button key={d.id} type="button" role="radio" aria-checked={diff === d.id} onClick={() => setDiff(d.id)} className={chip(diff === d.id)}>
-                {d.label}
+              <button
+                key={d.id}
+                type="button"
+                role="radio"
+                aria-checked={diff === d.id}
+                onClick={() => setDiff(d.id)}
+                className={`${cardBase} flex-col items-start gap-3 ${diff === d.id ? "border-brand bg-brand-light/60 ring-2 ring-brand/25" : ""}`}
+              >
+                {d.bars > 0 ? (
+                  <span className="flex h-11 items-end gap-1" aria-hidden>
+                    {[1, 2, 3].map((b) => (
+                      <span
+                        key={b}
+                        className={`w-2.5 rounded-full ${b <= d.bars ? "bg-brand" : "bg-slate-200"}`}
+                        style={{ height: `${10 + b * 8}px` }}
+                      />
+                    ))}
+                  </span>
+                ) : (
+                  <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-100 text-slate-600">
+                    <Shuffle size={22} aria-hidden />
+                  </span>
+                )}
+                <span className="font-bold text-ink">{d.label}</span>
               </button>
             ))}
           </div>
         </section>
         <section>
-          <h2 className="mb-3 text-lg font-bold text-ink">{t("practice.step3")}</h2>
-          <div className="flex flex-wrap gap-3" role="radiogroup" aria-label={t("practice.step3")}>
-            <button type="button" role="radio" aria-checked={!timed} onClick={() => setTimed(false)} className={chip(!timed)}>
-              {t("common.withoutTimer")}
+          <h2 className="mb-4 text-lg font-bold text-ink">{t("practice.step3")}</h2>
+          <div className="grid gap-3 sm:grid-cols-2 sm:gap-4" role="radiogroup" aria-label={t("practice.step3")}>
+            <button
+              type="button"
+              role="radio"
+              aria-checked={!timed}
+              onClick={() => setTimed(false)}
+              className={`${cardBase} ${!timed ? "border-brand bg-brand-light/60 ring-2 ring-brand/25" : ""}`}
+            >
+              <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-slate-100 text-slate-600">
+                <TimerOff size={22} aria-hidden />
+              </span>
+              <span className="font-bold text-ink">{t("common.withoutTimer")}</span>
             </button>
-            <button type="button" role="radio" aria-checked={timed} onClick={() => setTimed(true)} className={chip(timed)}>
-              {t("common.withTimer")} · {t("practice.perQuestion", { sec: PRACTICE_SECONDS_PER_Q })}
+            <button
+              type="button"
+              role="radio"
+              aria-checked={timed}
+              onClick={() => setTimed(true)}
+              className={`${cardBase} ${timed ? "border-amber-500 bg-amber-50 ring-2 ring-amber-400/40" : ""}`}
+            >
+              <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-amber-100 text-amber-700">
+                <Timer size={22} aria-hidden />
+              </span>
+              <span className="font-bold text-ink">
+                {t("common.withTimer")} <span className="font-mono text-sm font-semibold text-slate-500">· {t("practice.perQuestion", { sec: PRACTICE_SECONDS_PER_Q })}</span>
+              </span>
             </button>
           </div>
-          <p className="mt-2 text-sm text-slate-500">
+          <p className="mt-3 text-sm text-slate-500">
             {timed ? t("practice.timedNote", { sec: PRACTICE_SECONDS_PER_Q }) : t("practice.untimedNote")}
           </p>
         </section>
         <button
           type="button"
           onClick={start}
-          className="w-full rounded-xl bg-brand px-8 py-4 text-lg font-semibold text-white hover:bg-brand-dark sm:w-auto"
+          className="btn-primary w-full sm:w-auto"
         >
           {t("practice.startPractice")} · {PRACTICE_COUNT} {t("practice.questions")}
         </button>
@@ -192,7 +242,7 @@ function PracticeRun({
         )}
       </div>
       {pace && <PaceBadge status={pace} />}
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="card p-6 shadow-card md:p-8">
         <QuestionView q={q} selectedId={selected} onSelect={setSelected} />
         <div className="mt-6 flex items-center justify-between">
           <button
@@ -264,9 +314,9 @@ function PracticeDone({
 
   return (
     <div className="mx-auto max-w-3xl">
-      <h1 className="text-3xl font-extrabold text-ink">{t("practice.resultsTitle")}</h1>
-      <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <div className="text-5xl font-extrabold text-brand">{correct}/{total}</div>
+      <h1 className="section-head">{t("practice.resultsTitle")}</h1>
+      <div className="card mt-6 p-6 md:p-8">
+        <div className="font-display text-6xl font-semibold text-brand-deep">{correct}/{total}</div>
         <p className="mt-1 text-slate-600">
           {t("results.accuracy")}: {Math.round((correct / Math.max(1, total)) * 100)}%
         </p>

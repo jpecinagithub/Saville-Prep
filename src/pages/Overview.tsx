@@ -1,77 +1,118 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, AlarmClock } from "lucide-react";
+import { ArrowRight, AlarmClock, BookOpenText, Calculator, Shapes } from "lucide-react";
 import { useT } from "../i18n/useT";
+
+const SKILLS = [
+  {
+    id: "verbal",
+    gradient: "from-verbal via-verbal-deep to-[#1e40af]",
+    soft: "bg-verbal-soft",
+    ink: "text-verbal-ink",
+    icon: BookOpenText,
+  },
+  {
+    id: "numerical",
+    gradient: "from-numerical via-numerical-deep to-[#0b5e57]",
+    soft: "bg-numerical-soft",
+    ink: "text-numerical-ink",
+    icon: Calculator,
+  },
+  {
+    id: "diagrammatic",
+    gradient: "from-diagram via-diagram-deep to-[#5b21b6]",
+    soft: "bg-diagram-soft",
+    ink: "text-diagram-ink",
+    icon: Shapes,
+  },
+] as const;
 
 export function Overview() {
   const { t } = useT();
 
-  const sections = [
-    { label: t("common.verbal"), mins: 6, pct: 33.33 },
-    { label: t("common.numerical"), mins: 6, pct: 33.33 },
-    { label: t("common.diagrammatic"), mins: 6, pct: 33.34 },
-  ];
-
   const areas = [
-    { title: t("overview.verbalTitle"), text: t("overview.verbalText") },
-    { title: t("overview.numericalTitle"), text: t("overview.numericalText") },
-    { title: t("overview.diagrammaticTitle"), text: t("overview.diagrammaticText") },
+    { title: t("overview.verbalTitle"), text: t("overview.verbalText"), skill: SKILLS[0] },
+    { title: t("overview.numericalTitle"), text: t("overview.numericalText"), skill: SKILLS[1] },
+    { title: t("overview.diagrammaticTitle"), text: t("overview.diagrammaticText"), skill: SKILLS[2] },
   ];
 
   return (
     <div className="mx-auto max-w-4xl">
-      <h1 className="text-3xl font-extrabold text-ink md:text-4xl">{t("overview.title")}</h1>
-      <p className="mt-1 text-lg font-semibold text-brand">{t("overview.subtitle")}</p>
+      <p className="kicker text-brand">{t("overview.subtitle")}</p>
+      <h1 className="section-head mt-2">{t("overview.title")}</h1>
 
-      {/* Very visual 18-minute bar */}
-      <section className="mt-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm md:p-8" aria-label={t("overview.total")}>
-        <div className="flex items-center justify-between">
-          <span className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-widest text-slate-500">
-            <AlarmClock size={16} aria-hidden /> Swift Analysis
-          </span>
-          <span className="text-3xl font-extrabold text-brand md:text-4xl">{t("overview.total")}</span>
+      {/* Hero 18-minute bar */}
+      <section className="card mt-8 overflow-hidden md:mt-10" aria-label={t("overview.total")}>
+        <div className="hero-wash relative px-6 pb-7 pt-6 md:px-10 md:pb-9 md:pt-8">
+          <div className="texture-dots pointer-events-none absolute inset-0 opacity-50" aria-hidden />
+          <div className="relative flex flex-wrap items-end justify-between gap-3">
+            <span className="kicker inline-flex items-center gap-2 text-slate-500">
+              <AlarmClock size={16} aria-hidden /> Swift Analysis
+            </span>
+            <span className="font-display text-4xl font-semibold text-brand-deep md:text-5xl">
+              {t("overview.total")}
+            </span>
+          </div>
+
+          <div
+            className="relative mt-6 flex h-28 w-full overflow-hidden rounded-2xl shadow-card ring-1 ring-black/5 md:h-36"
+            role="img"
+            aria-label="Verbal 6 min, Numerical 6 min, Diagrammatic 6 min"
+          >
+            {SKILLS.map((s, i) => (
+              <div
+                key={s.id}
+                style={{ width: "33.33%" }}
+                className={`relative flex flex-col items-center justify-center bg-gradient-to-br ${s.gradient} ${
+                  i < SKILLS.length - 1 ? "border-r border-white/25" : ""
+                }`}
+              >
+                <span className="px-1 text-center text-[10px] font-extrabold uppercase leading-tight tracking-wider text-white/85 sm:text-xs md:text-sm md:tracking-[0.14em]">
+                  {t(`common.${s.id}`)}
+                </span>
+                <span className="mt-1 font-mono text-2xl font-bold tabular-nums text-white drop-shadow-sm sm:text-3xl md:text-5xl">
+                  6
+                  <span className="ml-1 text-sm font-semibold sm:text-lg md:text-2xl">{t("common.minutes")}</span>
+                </span>
+              </div>
+            ))}
+            {/* sheen */}
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/12 via-transparent to-black/10" aria-hidden />
+          </div>
+
+          <div className="relative mt-4 flex flex-wrap items-center justify-between gap-2 text-sm font-medium">
+            <span className="inline-flex items-center gap-2 text-slate-500">
+              {[t("common.verbal"), t("common.numerical"), t("common.diagrammatic")].map((l, i) => (
+                <span key={l} className="inline-flex items-center gap-2">
+                  <span className={`h-2 w-2 rounded-full ${i === 0 ? "bg-verbal" : i === 1 ? "bg-numerical" : "bg-diagram"}`} aria-hidden />
+                  {l}
+                  {i < 2 && <span aria-hidden className="text-slate-300">→</span>}
+                </span>
+              ))}
+            </span>
+            <span className="chip bg-amber-100 text-amber-800">{t("overview.summary")}</span>
+          </div>
         </div>
-        <div className="mt-4 flex h-20 w-full overflow-hidden rounded-xl md:h-24" role="img" aria-label={`Verbal 6 min, Numerical 6 min, Diagrammatic 6 min`}>
-          {sections.map((s, i) => (
-            <div
-              key={s.label}
-              style={{ width: `${s.pct}%` }}
-              className={`flex flex-col items-center justify-center border-r border-white/60 last:border-r-0 ${
-                i === 0 ? "bg-brand" : i === 1 ? "bg-teal-700" : "bg-slate-600"
-              }`}
-            >
-              <span className="px-1 text-center text-xs font-bold uppercase tracking-wide text-white md:text-sm">
-                {s.label}
-              </span>
-              <span className="font-mono text-lg font-bold text-white md:text-2xl">
-                6 {t("common.minutes")}
-              </span>
-            </div>
-          ))}
-        </div>
-        <div className="mt-3 flex items-center justify-between text-sm font-medium text-slate-500">
-          <span>Verbal → Numerical → Diagrammatic</span>
-          <span className="font-bold text-amber-700">{t("overview.summary")}</span>
-        </div>
-        <p className="mt-4 rounded-xl bg-slate-100 p-4 text-[15px] text-slate-700">
+        <p className="border-t border-slate-100 bg-slate-50/70 px-6 py-4 text-[15px] leading-relaxed text-slate-600 md:px-10">
           {t("overview.separateTimers")}
         </p>
       </section>
 
       {/* What each area measures */}
-      <section className="mt-6 grid gap-4 md:grid-cols-3">
+      <section className="mt-6 grid gap-5 md:grid-cols-3">
         {areas.map((a) => (
-          <article key={a.title} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-            <h2 className="text-base font-bold text-brand">{a.title}</h2>
+          <article key={a.title} className="card card-hover relative overflow-hidden p-5 md:p-6">
+            <span className={`absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r ${a.skill.gradient}`} aria-hidden />
+            <span className={`inline-flex h-11 w-11 items-center justify-center rounded-2xl ${a.skill.soft} ${a.skill.ink}`}>
+              <a.skill.icon size={22} aria-hidden />
+            </span>
+            <h2 className="mt-3 text-base font-bold text-ink">{a.title}</h2>
             <p className="mt-2 text-[15px] leading-relaxed text-slate-600">{a.text}</p>
           </article>
         ))}
       </section>
 
-      <div className="mt-8 text-center">
-        <Link
-          to="/learn"
-          className="inline-flex items-center gap-2 rounded-xl bg-brand px-8 py-4 text-lg font-semibold text-white hover:bg-brand-dark"
-        >
+      <div className="mt-10 text-center">
+        <Link to="/learn" className="btn-primary">
           {t("overview.cta")} <ArrowRight size={20} aria-hidden />
         </Link>
       </div>

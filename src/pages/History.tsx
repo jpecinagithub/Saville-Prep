@@ -30,7 +30,7 @@ export function History() {
     <div className="mx-auto max-w-4xl">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-extrabold text-ink md:text-4xl">{t("history.title")}</h1>
+          <h1 className="section-head">{t("history.title")}</h1>
           <p className="mt-2 text-slate-600">{t("history.subtitle")}</p>
         </div>
         {history.length > 0 && (
@@ -45,26 +45,26 @@ export function History() {
       </div>
 
       {history.length === 0 ? (
-        <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-10 text-center shadow-sm">
+        <div className="card mt-8 p-10 text-center">
           <p className="text-slate-500">{t("history.empty")}</p>
           <Link
             to="/mock"
-            className="mt-4 inline-flex items-center gap-2 rounded-xl bg-brand px-6 py-3 font-semibold text-white hover:bg-brand-dark"
+            className="mt-4 inline-flex items-center gap-2 rounded-xl bg-gradient-to-b from-brand to-brand-dark px-6 py-3 font-semibold text-white shadow-card transition hover:-translate-y-0.5 hover:shadow-lift"
           >
             <Timer size={18} aria-hidden /> {t("history.takeMock")}
           </Link>
         </div>
       ) : (
         <>
-          <div className="mt-6 overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <div className="card mt-6 overflow-x-auto">
             <table className="w-full min-w-[560px] border-collapse text-sm">
               <thead>
-                <tr className="bg-slate-100">
-                  <th scope="col" className="px-4 py-3 text-left font-semibold">{t("common.date")}</th>
-                  <th scope="col" className="px-4 py-3 text-left font-semibold">{t("common.overall")}</th>
-                  <th scope="col" className="px-4 py-3 text-left font-semibold">{t("history.colVerbal")}</th>
-                  <th scope="col" className="px-4 py-3 text-left font-semibold">{t("history.colNumerical")}</th>
-                  <th scope="col" className="px-4 py-3 text-left font-semibold">{t("history.colDiagrammatic")}</th>
+                <tr className="bg-slate-50">
+                  <th scope="col" className="px-4 py-3 text-left font-semibold text-slate-500">{t("common.date")}</th>
+                  <th scope="col" className="px-4 py-3 text-left font-semibold text-slate-500">{t("common.overall")}</th>
+                  <th scope="col" className="px-4 py-3 text-left"><span className="chip bg-verbal-soft text-verbal-ink">{t("history.colVerbal")}</span></th>
+                  <th scope="col" className="px-4 py-3 text-left"><span className="chip bg-numerical-soft text-numerical-ink">{t("history.colNumerical")}</span></th>
+                  <th scope="col" className="px-4 py-3 text-left"><span className="chip bg-diagram-soft text-diagram-ink">{t("history.colDiagrammatic")}</span></th>
                 </tr>
               </thead>
               <tbody>
@@ -89,8 +89,8 @@ export function History() {
           </div>
 
           {trend.length >= 2 && (
-            <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-              <h2 className="text-lg font-bold text-ink">{t("history.trend")}</h2>
+            <section className="card mt-6 p-6 md:p-8">
+              <h2 className="font-display text-2xl font-semibold text-ink">{t("history.trend")}</h2>
               <div className="mt-2 h-56">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={trend} margin={{ top: 8, right: 16, bottom: 0, left: -12 }}>

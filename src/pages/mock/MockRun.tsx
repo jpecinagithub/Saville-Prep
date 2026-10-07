@@ -11,6 +11,11 @@ import { saveResult, type Attempt } from "../../utils/storage";
 import { setMockSession } from "../../utils/mockStore";
 
 const SECTIONS = ["verbal", "numerical", "diagrammatic"] as const;
+const SECTION_THEME = {
+  verbal: { pill: "bg-verbal-soft text-verbal-ink", bar: "bg-verbal" },
+  numerical: { pill: "bg-numerical-soft text-numerical-ink", bar: "bg-numerical" },
+  diagrammatic: { pill: "bg-diagram-soft text-diagram-ink", bar: "bg-diagram" },
+} as const;
 const SECTION_MS = 6 * 60 * 1000;
 const QUESTIONS_PER_SECTION = 8;
 
@@ -131,22 +136,22 @@ export function MockRun() {
   return (
     <div className="flex min-h-screen flex-col bg-white">
       {/* Header: SWFT ANALYSIS | SECTION | TIMER */}
-      <header className="border-b border-slate-200 bg-slate-50">
+      <header className="border-b border-slate-200 bg-white/90 backdrop-blur">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
-          <span className="text-sm font-extrabold uppercase tracking-widest text-slate-500">
+          <span className="text-sm font-extrabold uppercase tracking-widest text-slate-400">
             Swift Analysis
           </span>
-          <span className="text-sm font-bold uppercase tracking-widest text-brand">
+          <span className={`chip ${SECTION_THEME[sec.cat].pill}`}>
             {sectionLabel(sec.cat, t)}
           </span>
           <SectionTimer key={secIdx} onExpire={handleSectionExpire} />
         </div>
         {/* Section progress */}
-        <div className="flex h-1.5 w-full bg-slate-200" aria-hidden>
+        <div className="flex h-1.5 w-full bg-slate-200/70" aria-hidden>
           {exam.map((s, i) => (
             <div
               key={s.cat}
-              className={`h-full ${i < secIdx ? "bg-brand" : i === secIdx ? "bg-brand/60" : "bg-transparent"}`}
+              className={`h-full ${SECTION_THEME[s.cat].bar} ${i < secIdx ? "opacity-100" : i === secIdx ? "opacity-70" : "opacity-15"}`}
               style={{ width: `${100 / exam.length}%` }}
             />
           ))}
@@ -182,7 +187,7 @@ export function MockRun() {
             <button
               type="button"
               onClick={() => advance(selected)}
-              className="inline-flex items-center gap-2 rounded-xl bg-brand px-8 py-3 font-semibold text-white hover:bg-brand-dark"
+              className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-b from-brand to-brand-dark px-8 py-3 font-semibold text-white shadow-card transition hover:-translate-y-0.5 hover:shadow-lift"
             >
               {t("mock.next")} <ArrowRight size={18} aria-hidden />
             </button>

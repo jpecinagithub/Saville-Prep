@@ -37,11 +37,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
     <div className="flex min-h-screen flex-col">
       <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-          <Link to="/" className="flex items-center gap-2">
-            <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand text-lg font-bold text-white">
+          <Link to="/" className="flex items-center gap-2.5">
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-brand to-brand-deep font-display text-lg font-bold text-white shadow-card">
               S
             </span>
-            <span className="whitespace-nowrap text-lg font-bold tracking-tight text-ink">
+            <span className="whitespace-nowrap font-display text-xl font-semibold tracking-tight text-ink">
               Saville Prep
             </span>
           </Link>
@@ -120,11 +120,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
       <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">{children}</main>
 
-      <footer className="border-t border-slate-200 bg-white">
-        <div className="mx-auto max-w-6xl px-4 py-8 text-sm text-slate-500">
-          <p className="mb-4 max-w-4xl leading-relaxed">{t("footer.disclaimer")}</p>
-          <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-            <p>{t("footer.about")}</p>
+      <footer className="border-t border-white/10 bg-brand-deep">
+        <div className="mx-auto max-w-6xl px-4 py-10 text-sm text-slate-400">
+          <p className="mb-6 max-w-4xl leading-relaxed">{t("footer.disclaimer")}</p>
+          <div className="flex flex-col gap-2 border-t border-white/10 pt-6 md:flex-row md:items-center md:justify-between">
+            <p className="font-medium text-slate-300">{t("footer.about")}</p>
             <p>{t("footer.rights")}</p>
           </div>
         </div>

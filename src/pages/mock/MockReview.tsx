@@ -9,6 +9,12 @@ import { getMockSession } from "../../utils/mockStore";
 
 const LETTERS = ["A", "B", "C", "D"];
 
+const SECTION_PILL: Record<string, string> = {
+  verbal: "bg-verbal-soft text-verbal-ink",
+  numerical: "bg-numerical-soft text-numerical-ink",
+  diagrammatic: "bg-diagram-soft text-diagram-ink",
+};
+
 export function MockReview() {
   const { t, loc } = useT();
   const session = getMockSession();
@@ -32,7 +38,7 @@ export function MockReview() {
 
   return (
     <div className="mx-auto max-w-3xl py-6">
-      <h1 className="text-3xl font-extrabold text-ink">{t("review.title")}</h1>
+      <h1 className="section-head">{t("review.title")}</h1>
 
       <div className="mt-6 space-y-6">
         {session.result.attempts.map((a) => {
@@ -42,9 +48,9 @@ export function MockReview() {
           const userIdx = a.selected ? q.options.findIndex((o) => o.id === a.selected) : -1;
           const correctIdx = q.options.findIndex((o) => o.id === q.correctAnswer);
           return (
-            <article key={a.questionId + n} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <article key={a.questionId + n} className="card p-6 md:p-7">
               <div className="mb-3 flex items-center justify-between">
-                <span className="text-sm font-bold uppercase tracking-wide text-brand">
+                <span className={`chip ${SECTION_PILL[a.category] ?? "bg-slate-100 text-slate-600"}`}>
                   {sectionLabel(a.category, t)} · {t("common.question")} {n}
                 </span>
                 {a.correct ? (
